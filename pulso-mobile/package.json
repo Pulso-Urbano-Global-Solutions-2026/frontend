@@ -12,7 +12,10 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
     "axios": "^1.16.1",
+    "babel-preset-expo": "^56.0.14",
     "expo": "~56.0.8",
+    "expo-linear-gradient": "~56.0.4",
+    "expo-linking": "~56.0.13",
     "expo-router": "~56.2.8",
     "expo-secure-store": "~56.0.4",
     "expo-splash-screen": "~56.0.10",
