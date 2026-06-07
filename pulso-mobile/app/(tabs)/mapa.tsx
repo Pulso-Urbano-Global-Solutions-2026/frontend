@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import WebView, { type WebViewMessageEvent } from 'react-native-webview';
 import ErrorState from '@/components/ErrorState/ErrorState';
 import { Colors } from '@/constants/colors';
@@ -122,6 +124,7 @@ const LEAFLET_HTML = `
 
 export default function MapaScreen() {
   const { data, camada, loading, error, toggleCamada, refetch } = useMapa();
+  const router = useRouter();
   const webviewRef = useRef<WebView>(null);
   const [leafletReady, setLeafletReady] = useState(false);
 
@@ -170,6 +173,14 @@ export default function MapaScreen() {
             </TouchableOpacity>
           ))}
         </View>
+
+        <TouchableOpacity
+          style={styles.vulnBtn}
+          onPress={() => router.push('/vulnerabilidade')}
+        >
+          <Ionicons name="warning-outline" size={16} color={Colors.moderado} />
+          <Text style={styles.vulnBtnText}>Ver urgência por bairro</Text>
+        </TouchableOpacity>
 
         {data && (
           <Text style={styles.fonte}>
@@ -291,4 +302,13 @@ const styles = StyleSheet.create({
   legendText: { color: Colors.textMuted, fontSize: Typography.size.xs },
   legendMuted:{ color: Colors.textDim,   fontSize: Typography.size.xs },
   legendUnit: { color: Colors.textDim,   fontSize: Typography.size.xs, marginLeft: 4 },
+  vulnBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    margin: 8, marginTop: 0, padding: 10, borderRadius: 8,
+    backgroundColor: Colors.moderadoDim,
+    borderWidth: 1, borderColor: Colors.moderado,
+  },
+  vulnBtnText: {
+    color: Colors.moderado, fontSize: Typography.size.sm, fontWeight: '600',
+  },
 });
