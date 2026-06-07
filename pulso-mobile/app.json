@@ -17,7 +17,8 @@
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
-        }
+        },
+        "UIBackgroundModes": ["fetch", "remote-notification"]
       }
     },
     "android": {
@@ -27,12 +28,22 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.POST_NOTIFICATIONS"
+      ]
     },
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-splash-screen"
+      "expo-splash-screen",
+      ["expo-notifications", {
+        "icon": "./assets/images/icon.png",
+        "color": "#0e0f11",
+        "sounds": []
+      }]
     ],
     "experiments": {
       "typedRoutes": true
