@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { useAuthContext } from '@/contexts/AuthContext';
-import { getHistorico } from '@/services/scoreService';
+import { getHistorico, getZonas } from '@/services/scoreService';
 import type { ScoreHistoricoItem } from '@/types/score.types';
 
 interface HistoricoState {
@@ -11,14 +10,15 @@ interface HistoricoState {
 }
 
 export function useHistorico() {
-  const { userId } = useAuthContext();
   const [state, setState] = useState<HistoricoState>({ historico: [], loading: false, error: null });
 
   const fetch = useCallback(async () => {
-    if (!userId) { setState({ historico: [], loading: false, error: 'Usuário não autenticado' }); return; }
     setState((s) => ({ ...s, loading: true, error: null }));
     try {
-      const res = await getHistorico(userId, 7);
+      // Usa a primeira zona disponível (SP tem uma única zona monitorada).
+      const { zonas } = await getZonas();
+      const zonaId = zonas[0]?.id ?? 1;
+      const res = await getHistorico(zonaId, 7);
       setState({ historico: res.historico, loading: false, error: null });
     } catch (err) {
       const msg = axios.isAxiosError(err)
@@ -26,7 +26,7 @@ export function useHistorico() {
         : 'Erro ao buscar histórico';
       setState({ historico: [], loading: false, error: msg });
     }
-  }, [userId]);
+  }, []);
 
   useEffect(() => { void fetch(); }, [fetch]);
 
