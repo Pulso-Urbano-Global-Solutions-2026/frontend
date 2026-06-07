@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider, useAuthContext } from '@/contexts/AuthContext';
 import { authEvents } from '@/services/authEvents';
 import { Colors } from '@/constants/colors';
+import { requestPermissions } from '@/services/notificationService';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -30,12 +31,17 @@ function RootLayoutInner() {
     if (isAuthenticated && inAuth) router.replace('/(tabs)');
   }, [isAuthenticated, isLoaded, segments, router]);
 
+  useEffect(() => {
+    void requestPermissions();
+  }, []);
+
   return (
     <Stack screenOptions={{ headerStyle: { backgroundColor: Colors.bg }, headerTintColor: Colors.text }}>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="perfil" options={{ title: 'Perfil' }} />
       <Stack.Screen name="detalhes" options={{ title: 'Detalhes' }} />
+      <Stack.Screen name="vulnerabilidade" options={{ title: 'Vulnerabilidade' }} />
     </Stack>
   );
 }
