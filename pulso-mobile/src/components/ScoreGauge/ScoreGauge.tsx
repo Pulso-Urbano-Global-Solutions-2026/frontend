@@ -6,6 +6,10 @@ import { Typography } from '@/constants/typography';
 import type { ClassificacaoScore } from '@/types/score.types';
 import { clampScore, getClassificacaoColor, getClassificacaoLabel } from '@/utils/scoreUtils';
 
+// Fora do componente: createAnimatedComponent não pode ser chamado no render
+// pois cria um novo tipo a cada chamada, quebrando a reconciliação do React.
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
 interface Props { score: number; classificacao: ClassificacaoScore; size?: number; }
 
 export default function ScoreGauge({ score, classificacao, size = 200 }: Props) {
@@ -23,8 +27,6 @@ export default function ScoreGauge({ score, classificacao, size = 200 }: Props) 
     inputRange: [0, 100],
     outputRange: [circumference, 0],
   });
-
-  const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>

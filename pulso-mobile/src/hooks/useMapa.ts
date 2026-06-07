@@ -16,7 +16,9 @@ export function useMapa() {
       setState({ data, loading: false, error: null });
     } catch (err) {
       const msg = axios.isAxiosError(err)
-        ? (err.response?.data as { erro?: string })?.erro ?? err.message
+        ? (err.response?.data as { mensagem?: string; erro?: string })?.mensagem
+          ?? (err.response?.data as { erro?: string })?.erro
+          ?? err.message
         : 'Erro ao buscar camada do mapa';
       setState({ data: null, loading: false, error: msg });
     }

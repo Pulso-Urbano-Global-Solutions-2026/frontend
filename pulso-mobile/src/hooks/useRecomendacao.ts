@@ -20,7 +20,9 @@ export function useRecomendacao(scoreId: number | null, usuarioId: number | null
       .then((data) => setState({ data, loading: false, error: null }))
       .catch((err) => {
         const msg = axios.isAxiosError(err)
-          ? (err.response?.data as { erro?: string })?.erro ?? err.message
+          ? (err.response?.data as { mensagem?: string; erro?: string })?.mensagem
+            ?? (err.response?.data as { erro?: string })?.erro
+            ?? err.message
           : 'Erro ao buscar recomendação';
         setState({ data: null, loading: false, error: msg });
       });

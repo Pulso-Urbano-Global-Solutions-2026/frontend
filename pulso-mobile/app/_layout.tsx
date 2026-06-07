@@ -8,23 +8,27 @@ import { Colors } from '@/constants/colors';
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutInner() {
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated, isLoaded } = useAuthContext();
   const router = useRouter();
   const segments = useSegments();
 
-  // Listener do event bus: interceptor 401 → navegar para login.
+  // Esconde o splash apenas depois que o SecureStore resolver (evita flash de login).
+  useEffect(() => {
+    if (isLoaded) SplashScreen.hideAsync();
+  }, [isLoaded]);
+
+  // Listener do event bus: interceptor 401 em rota autenticada → login.
   useEffect(() => {
     return authEvents.on('unauthorized', () => router.replace('/(auth)/login'));
   }, [router]);
 
-  // Auth guard: redireciona em ambas as direções.
+  // Auth guard bidirecional: aguarda isLoaded para não redirecionar antes da restauração do token.
   useEffect(() => {
+    if (!isLoaded) return;
     const inAuth = segments[0] === '(auth)';
     if (!isAuthenticated && !inAuth) router.replace('/(auth)/login');
     if (isAuthenticated && inAuth) router.replace('/(tabs)');
-  }, [isAuthenticated, segments, router]);
-
-  useEffect(() => { SplashScreen.hideAsync(); }, []);
+  }, [isAuthenticated, isLoaded, segments, router]);
 
   return (
     <Stack screenOptions={{ headerStyle: { backgroundColor: Colors.bg }, headerTintColor: Colors.text }}>
