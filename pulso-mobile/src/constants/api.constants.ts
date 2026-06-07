@@ -8,5 +8,8 @@ export const ApiPaths = {
   recomendacao: '/api/v1/recomendacao',
   mapa: { camadas: '/api/v1/mapa/camadas' },
   usuario: { base: '/api/v1/usuario', byId: (id: number) => `/api/v1/usuario/${id}` },
+  vulnerabilidade: {
+    zonas: '/api/v1/vulnerabilidade/zonas',
+  },
 } as const;
 export const SAO_PAULO = { lat: -23.5505, lon: -46.6333 } as const;
