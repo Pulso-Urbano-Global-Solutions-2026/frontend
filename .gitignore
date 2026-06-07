@@ -1,0 +1,12 @@
+# Pasta duplicada criada por clone aninhado — não faz parte do projeto
+frontend-main/
+
+# Expo cache local
+.expo/
+
+# Configurações locais do Claude Code
+.claude/
+
+# Env local (o .env.example é versionado, o .env não)
+.env
+.env.local

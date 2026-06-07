@@ -15,16 +15,13 @@
 | Gustavo Bosak Santos | RM566315 |
 | Clayton Alves dos Santos | RM562285 |
 
-## 🎬 Vídeo Demo
+## Vídeo Demo
 
 > Em breve — link YouTube (máx 5 min)
 
 ## Solução
 
-Pulso Urbano transforma dados de satélites orbitais (NO₂ do Sentinel-5P e
-temperatura de superfície do ECOSTRESS) em um score de saúde ambiental (0–100)
-para cidadãos de São Paulo. O app entrega recomendações personalizadas com base
-no perfil do usuário (exercício físico, crianças em casa, problemas respiratórios).
+Pulso Urbano transforma dados de satélites orbitais (NO₂ do Sentinel-5P e temperatura de superfície do ECOSTRESS) em um score de saúde ambiental (0–100) para cidadãos de São Paulo. O app entrega recomendações personalizadas com base no perfil do usuário (exercício físico, crianças em casa, problemas respiratórios).
 
 ## Stack
 
@@ -35,157 +32,121 @@ no perfil do usuário (exercício físico, crianças em casa, problemas respirat
 | Axios + expo-secure-store | HTTP + JWT seguro |
 | react-native-gifted-charts | Gráfico de histórico |
 | WebView + Leaflet.js | Mapa GeoJSON |
-| Java API (Spring Boot) — Fly.io | Backend principal |
+| Java API (Spring Boot) — Railway | Backend principal |
 
 ---
 
 ## Pré-requisitos
 
-Antes de clonar, certifique-se de ter instalado:
-
 - **Node.js 18+** — [nodejs.org](https://nodejs.org)
 - **npm 9+** — vem junto com o Node
 - **Expo Go** no celular — [Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) / [App Store](https://apps.apple.com/app/expo-go/id982107779)
-  - Precisa ser a versão mais recente (SDK 56 compatível)
-  - Se a Play Store não atualizar, baixe o APK direto em [expo.dev/go](https://expo.dev/go)
+  - Se a versão da loja não suportar SDK 56, baixe o APK direto em [expo.dev/go](https://expo.dev/go)
 
 ---
 
 ## Como rodar
 
-### 1. Clonar o repositório
+### 1. Clonar e entrar na pasta
 
 ```bash
-git clone <url-do-repo>
-cd pulso-mobile
+git clone https://github.com/Pulso-Urbano-Global-Solutions-2026/frontend.git
+cd frontend/pulso-mobile
 ```
 
 ### 2. Instalar dependências
 
 ```bash
-npm install -- --legacy-peer-deps
+npm install --legacy-peer-deps
 ```
 
-> **Atenção:** use sempre `-- --legacy-peer-deps` nos installs deste projeto.
-> O Expo SDK 56 tem conflitos de peer dependencies com algumas libs — a flag
-> resolve sem quebrar nada.
-
-Se aparecer erro de pacote faltando, instale assim:
-
-```bash
-npx expo install <nome-do-pacote> -- --legacy-peer-deps
-```
+> O Expo SDK 56 tem conflitos de peer deps com algumas libs — a flag `--legacy-peer-deps` resolve sem quebrar nada. Use-a em todos os installs.
 
 ### 3. Configurar o ambiente
-
-Crie o arquivo `.env` na raiz do projeto:
 
 ```bash
 cp .env.example .env
 ```
 
-O `.env` já está configurado para usar a API de produção no Fly.io.
-Não precisa editar nada — só copiar o `.env.example`.
+O `.env.example` já aponta para a API de produção no Railway — não precisa editar nada, só copiar.
 
-Conteúdo do `.env`:
+> O Metro não recarrega variáveis de ambiente automaticamente. Após alterar o `.env`, sempre reinicie com `npx expo start --clear`.
 
-```
-EXPO_PUBLIC_API_URL=https://pulso-urbano-562999.fly.dev
-```
-
-> **Importante:** o Metro (bundler do Expo) não recarrega variáveis de ambiente
-> automaticamente. Sempre que alterar o `.env`, reinicie com `npx expo start --clear`.
-
-### 4. Instalar pacotes adicionais (se necessário)
-
-Caso algum pacote esteja faltando após o `npm install`, instale manualmente:
-
-```bash
-npx expo install expo-linking -- --legacy-peer-deps
-npx expo install expo-linear-gradient -- --legacy-peer-deps
-npx expo install babel-preset-expo -- --legacy-peer-deps
-```
-
-### 5. Iniciar o projeto
+### 4. Iniciar
 
 ```bash
 npx expo start --clear
 ```
 
-### 6. Abrir no celular
+Escaneie o QR code com o Expo Go. O celular e o PC precisam estar na **mesma rede Wi-Fi**.
 
-1. Abra o **Expo Go** no celular
-2. Escaneie o QR code que aparece no terminal
-3. O celular e o PC precisam estar na **mesma rede wi-fi**
+Para abrir direto no emulador Android (requer Android Studio com AVD configurado):
+
+```bash
+npx expo start --clear
+# pressione "a" no terminal
+```
 
 ---
 
 ## Problemas comuns
 
-### "Project is incompatible with this version of Expo Go"
-O Expo Go está desatualizado. Atualize pela Play Store ou baixe o APK em [expo.dev/go](https://expo.dev/go).
+**"Project is incompatible with this version of Expo Go"**
+Expo Go desatualizado. Baixe o APK para SDK 56 em [expo.dev/go](https://expo.dev/go).
 
-### "EXPO_PUBLIC_API_URL não definida"
-O arquivo `.env` não existe ou está vazio. Crie manualmente com o conteúdo:
+**"EXPO_PUBLIC_API_URL não definida"**
+O `.env` não existe. Crie com:
 ```
-EXPO_PUBLIC_API_URL=https://pulso-urbano-562999.fly.dev
+EXPO_PUBLIC_API_URL=https://hearty-adaptation-production-6de3.up.railway.app
 ```
-Depois reinicie com `npx expo start --clear`.
+Reinicie com `npx expo start --clear`.
 
-### "Cannot find module 'babel-preset-expo'"
+**npm install trava com conflito de peer deps**
 ```bash
-npm install babel-preset-expo -- --legacy-peer-deps
-npx expo start --clear
+npm install --legacy-peer-deps
 ```
 
-### "Unable to resolve expo-linking"
+**Pacote faltando após install**
 ```bash
-npx expo install expo-linking -- --legacy-peer-deps
-npx expo start --clear
-```
-
-### "Gradient package was not found"
-```bash
-npx expo install expo-linear-gradient -- --legacy-peer-deps
-npx expo start --clear
-```
-
-### npm install trava com conflito de peer deps
-Sempre use a flag:
-```bash
-npm install -- --legacy-peer-deps
+npx expo install <pacote> --legacy-peer-deps
 ```
 
 ---
 
-## CRUD com a API Java (30pts GS)
+## Telas
 
-| Verbo HTTP | Endpoint | Tela |
-|-----------|----------|------|
-| POST | /api/v1/auth/register | Register |
-| GET | /api/v1/score/current | Home |
-| GET | /api/v1/score/historico | Histórico |
-| GET | /api/v1/usuario/{id} | Perfil |
-| PUT | /api/v1/usuario/{id} | Perfil |
-| DELETE | /api/v1/usuario/{id} | Perfil |
+| Tela | Arquivo | Endpoints |
+|------|---------|-----------|
+| Login | `app/(auth)/login.tsx` | `POST /auth/login` |
+| Cadastro | `app/(auth)/register.tsx` | `POST /auth/register` |
+| Home | `app/(tabs)/index.tsx` | `GET /score/current`, `GET /recomendacao` |
+| Mapa | `app/(tabs)/mapa.tsx` | `GET /mapa/camadas` |
+| Histórico | `app/(tabs)/historico.tsx` | `GET /score/historico`, `GET /score/zonas` |
+| Perfil | `app/perfil.tsx` | `GET/PUT/DELETE /usuario/{id}` |
+| Detalhes | `app/detalhes.tsx` | — (estático) |
 
-## Telas (5 telas — 10pts GS)
+## CRUD com a API (GS)
 
-| Tela | Arquivo | API |
-|------|---------|-----|
-| Home | app/(tabs)/index.tsx | GET /score/current + /recomendacao |
-| Mapa | app/(tabs)/mapa.tsx | GET /mapa/camadas |
-| Histórico | app/(tabs)/historico.tsx | GET /score/historico |
-| Perfil | app/perfil.tsx | GET/PUT/DELETE /usuario |
-| Detalhes | app/detalhes.tsx | — (estático) |
+| Verbo | Endpoint | Tela |
+|-------|----------|------|
+| POST | `/api/v1/auth/register` | Cadastro |
+| POST | `/api/v1/auth/login` | Login |
+| GET | `/api/v1/score/current` | Home |
+| GET | `/api/v1/score/historico` | Histórico |
+| GET | `/api/v1/recomendacao` | Home |
+| GET | `/api/v1/mapa/camadas` | Mapa |
+| GET | `/api/v1/usuario/{id}` | Perfil |
+| PUT | `/api/v1/usuario/{id}` | Perfil |
+| DELETE | `/api/v1/usuario/{id}` | Perfil |
 
 ## API
 
-Base URL: `https://pulso-urbano-562999.fly.dev`
-
-- Health check: `/actuator/health`
-- Swagger: `/swagger-ui.html`
-- OpenAPI: `/api-docs`
+| Recurso | URL |
+|---------|-----|
+| Base URL | `https://hearty-adaptation-production-6de3.up.railway.app` |
+| Health | `/actuator/health` |
+| Swagger | `/swagger-ui.html` |
+| OpenAPI | `/api-docs` |
 
 ## Screenshots
 
