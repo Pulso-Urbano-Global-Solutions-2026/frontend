@@ -1,4 +1,4 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import ClassificacaoBadge from '@/components/ClassificacaoBadge/ClassificacaoBadge';
 import EmptyState from '@/components/EmptyState/EmptyState';
@@ -13,18 +13,31 @@ import { getClassificacaoColor } from '@/utils/scoreUtils';
 
 export default function HistoricoScreen() {
   const { historico, loading, error, refetch } = useHistorico();
+  const { width: windowWidth } = useWindowDimensions();
 
-  const chartData = historico.map((h) => ({
-    value: h.score,
+  // Garante ordem cronológica (backend pode retornar em qualquer ordem).
+  const sorted = [...historico].sort((a, b) => a.dt.localeCompare(b.dt));
+
+  const chartWidth = windowWidth - 40; // 20px padding cada lado
+  const spacing = sorted.length > 1
+    ? Math.max(30, Math.floor((chartWidth - 30) / sorted.length))
+    : 50;
+
+  const chartData = sorted.map((h) => ({
+    value: Math.round(h.score),
     label: formatDayLabel(h.dt),
-    dataPointColor: getClassificacaoColor(h.classificacao),
+    // Não usar dataPointColor aqui pois o gifted-charts v1 ignora quando
+    // dataPointsColor está setado no componente — controlamos a cor da linha.
+    dataPointLabelComponent: undefined,
   }));
 
   const renderItem = ({ item }: { item: ScoreHistoricoItem }) => (
     <View style={styles.card}>
       <View style={styles.cardRow}>
         <Text style={styles.cardDate}>{formatDate(item.dt)}</Text>
-        <Text style={styles.cardScore}>{Math.round(item.score)}</Text>
+        <Text style={[styles.cardScore, { color: getClassificacaoColor(item.classificacao) }]}>
+          {Math.round(item.score)}
+        </Text>
       </View>
       <ClassificacaoBadge classificacao={item.classificacao} size="sm" />
     </View>
@@ -41,11 +54,16 @@ export default function HistoricoScreen() {
           <EmptyState icon="time-outline" message="Ainda sem histórico. Volte amanhã!" />
         )}
 
-        {historico.length > 0 && (
+        {sorted.length > 0 && (
           <>
             <View style={styles.chart}>
               <LineChart
                 data={chartData}
+                width={chartWidth}
+                height={180}
+                spacing={spacing}
+                initialSpacing={16}
+                endSpacing={16}
                 color={Colors.bom}
                 thickness={2}
                 maxValue={100}
@@ -56,11 +74,18 @@ export default function HistoricoScreen() {
                 xAxisLabelTextStyle={{ color: Colors.textMuted, fontSize: 10 }}
                 backgroundColor={Colors.surface}
                 dataPointsColor={Colors.bom}
+                dataPointsRadius={5}
                 curved
+                hideRules={false}
+                rulesColor={Colors.border}
+                rulesType="solid"
+                yAxisThickness={0}
+                xAxisThickness={1}
               />
             </View>
+
             <FlatList
-              data={historico}
+              data={sorted}
               keyExtractor={(item) => item.dt}
               renderItem={renderItem}
               scrollEnabled={false}
@@ -76,9 +101,9 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg },
   content: { flexGrow: 1, padding: 20, gap: 16 },
   title: { fontSize: Typography.size.lg, fontWeight: '700', color: Colors.text },
-  chart: { backgroundColor: Colors.surface, borderRadius: 12, padding: 12, overflow: 'hidden' },
+  chart: { backgroundColor: Colors.surface, borderRadius: 12, paddingTop: 12, paddingBottom: 4, overflow: 'hidden' },
   card: { backgroundColor: Colors.surface, borderRadius: 8, padding: 12, marginBottom: 8, gap: 8 },
   cardRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardDate: { color: Colors.textMuted, fontSize: Typography.size.sm },
-  cardScore: { color: Colors.text, fontSize: Typography.size.lg, fontWeight: '700' },
+  cardScore: { fontSize: Typography.size.lg, fontWeight: '700' },
 });
