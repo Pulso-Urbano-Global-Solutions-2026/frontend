@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import WebView from 'react-native-webview';
 import ErrorState from '@/components/ErrorState/ErrorState';
@@ -63,13 +63,13 @@ export default function MapaScreen() {
   const { data, camada, loading, error, toggleCamada, refetch } = useMapa();
   const webviewRef = useRef<WebView>(null);
 
-  const sendData = () => {
+  const sendData = useCallback(() => {
     if (data && webviewRef.current) {
       webviewRef.current.postMessage(JSON.stringify(data));
     }
-  };
+  }, [data]);
 
-  useEffect(() => { sendData(); }, [data]);
+  useEffect(() => { sendData(); }, [sendData]);
 
   return (
     <View style={styles.container}>

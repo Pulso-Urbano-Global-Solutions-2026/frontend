@@ -31,7 +31,7 @@ export default function PerfilScreen() {
       })
       .catch((e) => setError(e?.response?.data?.erro ?? e?.message ?? 'Erro ao carregar perfil'))
       .finally(() => setLoadingData(false));
-  }, [userId]);
+  }, [userId, router]);
 
   const handleSave = async () => {
     if (!userId) return;

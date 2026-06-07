@@ -5,6 +5,17 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { Colors } from '@/constants/colors';
 import { Typography } from '@/constants/typography';
 
+interface RowProps { label: string; value: boolean; onChange: (v: boolean) => void; }
+
+function Row({ label, value, onChange }: RowProps) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowLabel}>{label}</Text>
+      <Switch value={value} onValueChange={onChange} trackColor={{ true: Colors.bom, false: Colors.border }} />
+    </View>
+  );
+}
+
 export default function RegisterScreen() {
   const { register } = useAuthContext();
   const router = useRouter();
@@ -22,18 +33,10 @@ export default function RegisterScreen() {
     setLoading(true); setError(null);
     try {
       await register({ nome, email, senha, fazExercicio, temCrianca, temProblemaRespiratorio: temProblema });
-      // AuthContext faz auto-login → auth guard redireciona para (tabs)
     } catch (err: any) {
       setError(err?.response?.data?.mensagem ?? err?.response?.data?.erro ?? err?.message ?? 'Erro ao cadastrar');
     } finally { setLoading(false); }
   };
-
-  const Row = ({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) => (
-    <View style={styles.row}>
-      <Text style={styles.rowLabel}>{label}</Text>
-      <Switch value={value} onValueChange={onChange} trackColor={{ true: Colors.bom, false: Colors.border }} />
-    </View>
-  );
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
