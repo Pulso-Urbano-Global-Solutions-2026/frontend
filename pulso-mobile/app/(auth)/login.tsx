@@ -20,7 +20,7 @@ export default function LoginScreen() {
       await login({ email, senha });
       // auth guard do root layout redireciona para (tabs)
     } catch (err: any) {
-      setError(err?.response?.data?.erro ?? err?.message ?? 'Erro ao fazer login');
+      setError(err?.response?.data?.mensagem ?? err?.response?.data?.erro ?? err?.message ?? 'Erro ao fazer login');
     } finally { setLoading(false); }
   };
 

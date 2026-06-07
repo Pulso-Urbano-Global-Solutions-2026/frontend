@@ -23,8 +23,14 @@ api.interceptors.response.use(
   (res) => res,
   async (err) => {
     if (axios.isAxiosError(err) && err.response?.status === 401) {
-      await removeToken();
-      authEvents.emit('unauthorized');
+      const url = err.config?.url ?? '';
+      // Não disparar 'unauthorized' em endpoints de autenticação — 401 ali é
+      // credencial inválida, não sessão expirada.
+      const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register');
+      if (!isAuthEndpoint) {
+        await removeToken();
+        authEvents.emit('unauthorized');
+      }
     }
     return Promise.reject(err);
   }

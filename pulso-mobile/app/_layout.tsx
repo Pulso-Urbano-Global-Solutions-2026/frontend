@@ -17,10 +17,11 @@ function RootLayoutInner() {
     return authEvents.on('unauthorized', () => router.replace('/(auth)/login'));
   }, [router]);
 
-  // Auth guard: se não autenticado e fora da rota auth, redirecionar.
+  // Auth guard: redireciona em ambas as direções.
   useEffect(() => {
     const inAuth = segments[0] === '(auth)';
     if (!isAuthenticated && !inAuth) router.replace('/(auth)/login');
+    if (isAuthenticated && inAuth) router.replace('/(tabs)');
   }, [isAuthenticated, segments, router]);
 
   useEffect(() => { SplashScreen.hideAsync(); }, []);

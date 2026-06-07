@@ -24,7 +24,7 @@ export default function RegisterScreen() {
       await register({ nome, email, senha, fazExercicio, temCrianca, temProblemaRespiratorio: temProblema });
       // AuthContext faz auto-login → auth guard redireciona para (tabs)
     } catch (err: any) {
-      setError(err?.response?.data?.erro ?? err?.message ?? 'Erro ao cadastrar');
+      setError(err?.response?.data?.mensagem ?? err?.response?.data?.erro ?? err?.message ?? 'Erro ao cadastrar');
     } finally { setLoading(false); }
   };
 
