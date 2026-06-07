@@ -1,5 +1,6 @@
 // app/(tabs)/index.tsx — adiciona alerta de pet quando temp > 35°C
 import { useEffect, useState } from 'react';
+import { agendarNotificacaoDiaria } from '@/services/notificationService';
 import { RefreshControl, SafeAreaView, ScrollView, StyleSheet,
          Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -38,6 +39,16 @@ export default function HomeScreen() {
       .then((val) => setTemPet(val === 'true'))
       .catch(() => {}); // silencia — não quebra a home se falhar
   }, [userId]);
+
+  useEffect(() => {
+    if (!data) return;
+    void agendarNotificacaoDiaria({
+      score:           data.score,
+      classificacao:   data.classificacao,
+      no2Ppb:          data.no2Ppb,
+      tempSuperficieC: data.tempSuperficieC,
+    });
+  }, [data]);
 
   // Alerta de pet ativo: usuário tem pet + temperatura acima do limite
   const petAlertaAtivo =
