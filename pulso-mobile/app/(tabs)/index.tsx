@@ -14,10 +14,7 @@ import { formatDate } from '@/utils/dateUtils';
 export default function HomeScreen() {
   const { userId } = useAuthContext();
   const { data, loading, error, refetch } = useScore();
-  // BLOQUEIO Q-01: /score/current ainda não expõe scoreId, então passamos null
-  // (a recomendação fica desabilitada até o backend expor o id). Quando expuser,
-  // troque `null` por `data?.scoreId ?? null`.
-  const rec = useRecomendacao(null, userId);
+  const rec = useRecomendacao(data?.scoreId ?? null, userId);
 
   return (
     <SafeAreaView style={styles.safe}>

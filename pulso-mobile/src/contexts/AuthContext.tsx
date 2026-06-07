@@ -38,9 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (data: UsuarioCreate) => {
-    await authService.register(data);
-    // auto-login após registro
-    const res = await authService.login({ email: data.email, senha: data.senha });
+    const res = await authService.register(data);
     setToken(res.token);
     setUserId(getUserIdFromToken(res.token));
   };

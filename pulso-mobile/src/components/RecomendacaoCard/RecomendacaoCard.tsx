@@ -4,18 +4,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
 import { Typography } from '@/constants/typography';
 import type { RecomendacaoResponse } from '@/types/api.types';
-import { getRecomendacaoIcon } from '@/utils/scoreUtils';
-
-const ICON_COLOR = { success: Colors.bom, warning: Colors.moderado, error: Colors.critico } as const;
+import { getRecomendacaoIcon, getRecomendacaoColor } from '@/utils/scoreUtils';
 
 interface Props { recomendacao: RecomendacaoResponse; }
 
 export default function RecomendacaoCard({ recomendacao }: Props) {
-  const iconColor = ICON_COLOR[recomendacao.icone];
   return (
     <View style={styles.card}>
       <View style={styles.row}>
-        <Ionicons name={getRecomendacaoIcon(recomendacao.icone)} size={24} color={iconColor} />
+        <Ionicons
+          name={getRecomendacaoIcon(recomendacao.icone)}
+          size={24}
+          color={getRecomendacaoColor(recomendacao.icone)}
+        />
         <Text style={styles.text}>{recomendacao.texto}</Text>
       </View>
       {recomendacao.personalizadaPara.length > 0 && (

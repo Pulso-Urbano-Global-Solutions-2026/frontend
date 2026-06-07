@@ -21,7 +21,7 @@ export default function RegisterScreen() {
     if (!nome || !email || !senha) { setError('Preencha todos os campos obrigatórios'); return; }
     setLoading(true); setError(null);
     try {
-      await register({ nome, email, senha, fazExercicio, temCrianca, temProblemaResp: temProblema });
+      await register({ nome, email, senha, fazExercicio, temCrianca, temProblemaRespiratorio: temProblema });
       // AuthContext faz auto-login → auth guard redireciona para (tabs)
     } catch (err: any) {
       setError(err?.response?.data?.erro ?? err?.message ?? 'Erro ao cadastrar');

@@ -27,7 +27,7 @@ export default function PerfilScreen() {
     usuarioService.getById(userId)
       .then((u) => {
         setUsuario(u); setNome(u.nome);
-        setFazExercicio(u.fazExercicio); setTemCrianca(u.temCrianca); setTemProblema(u.temProblemaResp);
+        setFazExercicio(u.fazExercicio); setTemCrianca(u.temCrianca); setTemProblema(u.temProblemaRespiratorio);
       })
       .catch((e) => setError(e?.response?.data?.erro ?? e?.message ?? 'Erro ao carregar perfil'))
       .finally(() => setLoadingData(false));
@@ -37,7 +37,7 @@ export default function PerfilScreen() {
     if (!userId) return;
     setSaving(true);
     try {
-      const updated = await usuarioService.update(userId, { nome, fazExercicio, temCrianca, temProblemaResp: temProblema });
+      const updated = await usuarioService.update(userId, { nome, fazExercicio, temCrianca, temProblemaRespiratorio: temProblema });
       setUsuario(updated);
       Alert.alert('Sucesso', 'Perfil atualizado!');
     } catch (e: any) {
