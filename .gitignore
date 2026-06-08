@@ -7,6 +7,9 @@ frontend-main/
 # Configurações locais do Claude Code
 .claude/
 
+# Dependências do script de geração de ícones
+node_modules/
+
 # Env local (o .env.example é versionado, o .env não)
 .env
 .env.local

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"></feGaussianBlur>
+      <feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+    <filter id="sg" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"></feGaussianBlur>
+      <feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+    <clipPath id="hc">
+      <path d="M100 168C62 144 24 114 24 80C24 50 44 32 68 32C81 32 93 39 100 50C107 39 119 32 132 32C156 32 176 50 176 80C176 114 138 144 100 168Z"></path>
+    </clipPath>
+    <linearGradient id="bgr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3ddc84" stop-opacity="0.9"></stop>
+      <stop offset="60%" stop-color="#3ddc84" stop-opacity="0.5"></stop>
+      <stop offset="100%" stop-color="#3ddc84" stop-opacity="0.12"></stop>
+    </linearGradient>
+    <linearGradient id="sgr" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"></stop>
+      <stop offset="100%" stop-color="#3ddc84"></stop>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.10"></stop>
+      <stop offset="100%" stop-color="#0a0e1a" stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+
+  
+  <rect width="200" height="200" rx="32" fill="#0a0e1a"></rect>
+
+  
+  <g clip-path="url(#hc)">
+    <rect width="200" height="200" fill="#0c1220"></rect>
+    <rect width="200" height="200" fill="url(#sky)"></rect>
+
+    
+    <rect x="26" y="122" width="12" height="50" rx="1" fill="url(#bgr)"></rect>
+    <rect x="40" y="104" width="10" height="68" rx="1" fill="url(#bgr)"></rect>
+    <rect x="52" y="114" width="11" height="58" rx="1" fill="url(#bgr)"></rect>
+    <rect x="65" y="96" width="11" height="76" rx="1" fill="url(#bgr)"></rect>
+    <rect x="78" y="108" width="13" height="64" rx="1" fill="url(#bgr)"></rect>
+    <rect x="93" y="100" width="11" height="72" rx="1" fill="url(#bgr)"></rect>
+    <rect x="106" y="88" width="12" height="84" rx="1" fill="url(#bgr)"></rect>
+    <rect x="120" y="102" width="10" height="70" rx="1" fill="url(#bgr)"></rect>
+    <rect x="132" y="110" width="12" height="62" rx="1" fill="url(#bgr)"></rect>
+    <rect x="146" y="98" width="11" height="74" rx="1" fill="url(#bgr)"></rect>
+    <rect x="159" y="118" width="13" height="54" rx="1" fill="url(#bgr)"></rect>
+
+    
+    <path d="M24 97 L50 97 L58 117 L75 53 L83 97 L100 97 L109 117 L126 53 L134 97 L176 97" stroke="#22d3ee" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"></path>
+
+    
+    <circle cx="75" cy="53" r="3" fill="#22d3ee" filter="url(#glow)"></circle>
+    <circle cx="126" cy="53" r="3" fill="#22d3ee" filter="url(#glow)"></circle>
+  </g>
+
+  
+  <path d="M100 168C62 144 24 114 24 80C24 50 44 32 68 32C81 32 93 39 100 50C107 39 119 32 132 32C156 32 176 50 176 80C176 114 138 144 100 168Z" fill="none" stroke="url(#sgr)" stroke-width="2.5" filter="url(#sg)"></path>
+</svg>

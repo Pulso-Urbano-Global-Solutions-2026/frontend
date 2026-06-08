@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulso Urbano — Logo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space:   #0a0e1a;
+    --surface: #13151c;
+    --surf2:   #1a1d24;
+    --bom:     #3ddc84;
+    --sat:     #22d3ee;
+    --text:    #f0f0ed;
+    --muted:   #9b9ea6;
+    --line:    rgba(240,240,237,0.10);
+    --ff:      'Space Grotesk', sans-serif;
+    --mono:    'JetBrains Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--space); color: var(--text); font-family: var(--ff); min-height: 100vh; }
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 72px 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  /* ── Header ── */
+  .hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+  }
+  .hdr-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--sat); margin-bottom: 8px; }
+  .hdr-title { font-size: 42px; font-weight: 700; letter-spacing: 0.02em; }
+  .hdr-ver   { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+
+  /* ── Hero ── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+    min-height: 480px;
+  }
+  .hero-stage {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    padding: 80px;
+    background:
+      radial-gradient(ellipse 70% 70% at 50% 50%, rgba(34,211,238,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 55% at 50% 55%, rgba(61,220,132,0.04) 0%, transparent 100%);
+    position: relative;
+  }
+  .hero-info {
+    padding: 20px 0 20px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .brand       { font-size: 84px; font-weight: 700; letter-spacing: 0.05em; line-height: 0.9; }
+  .brand span  { display: block; font-weight: 300; color: var(--sat); letter-spacing: 0.22em; font-size: 74px; }
+  .brand-desc  { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 400px; }
+  .brand-desc strong { color: var(--text); font-weight: 600; }
+  .tagline {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(34,211,238,0.55);
+    border-left: 2px solid rgba(34,211,238,0.25);
+    padding-left: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── Section label ── */
+  .sec-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+
+  /* ── Lockups ── */
+  .lock-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .lu {
+    border-radius: 20px;
+    padding: 52px 36px 36px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .lu.dk { background: #0a0e1a; border: 1px solid rgba(255,255,255,0.08); }
+  .lu.sf { background: var(--surf2); border: 1px solid rgba(255,255,255,0.06); }
+  .lu.lt { background: #eeede8; }
+  .lu-cap {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.22em; text-transform: uppercase; margin-top: 22px;
+  }
+  .lu.dk .lu-cap, .lu.sf .lu-cap { color: rgba(155,158,166,0.5); }
+  .lu.lt .lu-cap { color: rgba(0,0,0,0.28); }
+
+  .wm          { display: flex; align-items: center; gap: 14px; }
+  .wm-tx       { display: flex; flex-direction: column; line-height: 1.1; }
+  .wm-tx .n    { font-size: 22px; font-weight: 700; letter-spacing: 0.09em; color: var(--text); }
+  .wm-tx .s    { font-size: 22px; font-weight: 300; letter-spacing: 0.24em; color: var(--sat); }
+  .lu.lt .wm-tx .n { color: #0a0e1a; }
+  .lu.lt .wm-tx .s { color: #0888a5; }
+
+  /* ── Size scale ── */
+  .size-row {
+    display: flex; align-items: flex-end; gap: 36px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 20px; padding: 44px 52px;
+  }
+  .sz { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .sz-lbl { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  /* ── Palette ── */
+  .pal { display: flex; gap: 12px; }
+  .sw { flex: 1; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+  .sw-c { height: 76px; }
+  .sw-b { padding: 14px 16px; background: var(--surface); }
+  .sw-n { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .sw-h { font-family: var(--mono); font-size: 13px; color: var(--text); margin-top: 5px; }
+  .sw-u { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+  /* ── Download section ── */
+  .dl-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 52px 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+  }
+  .dl-info { display: flex; flex-direction: column; gap: 10px; }
+  .dl-title { font-size: 28px; font-weight: 600; }
+  .dl-sub   { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 420px; }
+  .dl-btns  { display: flex; gap: 12px; flex-shrink: 0; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; border-radius: 12px;
+    font-family: var(--ff); font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; text-decoration: none;
+    transition: opacity 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn:hover  { opacity: 0.85; }
+  .btn:active { transform: scale(0.98); }
+  .btn.primary   { background: var(--sat); color: #041e26; }
+  .btn.secondary { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--line); }
+
+  /* ── Feedback toast ── */
+  .toast {
+    position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%);
+    background: rgba(13,20,33,0.95); border: 1px solid var(--sat);
+    color: var(--text); padding: 12px 24px; border-radius: 10px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em;
+    pointer-events: none; opacity: 0; transition: opacity 0.3s;
+    white-space: nowrap; z-index: 999;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ── Animations (animated hero only) ── */
+  @keyframes hb { 0%,70%,100%{opacity:.75} 25%{opacity:1} }
+  @keyframes eb { 0%,65%,100%{opacity:.55} 25%{opacity:1} }
+  @keyframes db { 0%,70%,100%{opacity:.45;r:3} 25%{opacity:1;r:4.5} }
+
+  .anim-h  { animation: hb 2.2s ease-in-out infinite; }
+  .anim-e  { animation: eb 2.2s ease-in-out infinite; }
+  .anim-d1 { animation: db 2.2s ease-in-out infinite; }
+  .anim-d2 { animation: db 2.2s ease-in-out infinite; animation-delay: .06s; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header class="hdr">
+    <div>
+      <div class="hdr-label">Pulso Urbano</div>
+      <h1 class="hdr-title">Logotipo</h1>
+    </div>
+    <span class="hdr-ver">2026</span>
+  </header>
+
+  <!-- HERO -->
+  <section>
+    <div class="hero">
+      <div class="hero-stage">
+        <div id="logo-main"></div>
+      </div>
+      <div class="hero-info">
+        <div class="brand">PULSO<span>URBANO</span></div>
+        <p class="brand-desc">
+          O <strong>coração</strong> como símbolo de vida urbana.
+          O traçado de <strong>ECG</strong> representando o pulso da cidade em tempo real.
+          O <strong>skyline</strong> integrado dentro do símbolo vital.
+        </p>
+        <div class="tagline">Dados do espaço.<br>Decisões na rua.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOCKUPS -->
+  <section>
+    <div class="sec-label">Variações · Lockups</div>
+    <div class="lock-grid">
+      <div class="lu dk">
+        <div class="wm">
+          <div id="lk-dk"></div>
+          <div class="wm-tx"><span class="n">PULSO</span><span class="s">URBANO</span></div>
+        </div>
+        <span class="lu-cap">Fundo escuro</span>
+      </div>
+      <div class="lu sf">
+        <div id="lk-ic"></div>
+        <span class="lu-cap">Ícone isolado</span>
+      </div>
+      <div class="lu lt">
+        <div class="wm">
+          <div id="lk-lt"></div>
+          <div class="wm-tx"><span class="n">PULSO</span><span class="s">URBANO</span></div>
+        </div>
+        <span class="lu-cap">Fundo claro</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIZE SCALE -->
+  <section>
+    <div class="sec-label">Escala de tamanhos</div>
+    <div class="size-row">
+      <div class="sz"><div id="sz-128"></div><span class="sz-lbl">128 px</span></div>
+      <div class="sz"><div id="sz-64"></div><span class="sz-lbl">64 px</span></div>
+      <div class="sz"><div id="sz-40"></div><span class="sz-lbl">40 px</span></div>
+      <div class="sz"><div id="sz-24"></div><span class="sz-lbl">24 px</span></div>
+    </div>
+  </section>
+
+  <!-- PALETTE -->
+  <section>
+    <div class="sec-label">Cores da marca</div>
+    <div class="pal">
+      <div class="sw">
+        <div class="sw-c" style="background:#0a0e1a;"></div>
+        <div class="sw-b"><div class="sw-n">Space</div><div class="sw-h">#0A0E1A</div><div class="sw-u">Fundo, ícone</div></div>
+      </div>
+      <div class="sw">
+        <div class="sw-c" style="background:#22d3ee;"></div>
+        <div class="sw-b"><div class="sw-n">Pulse Cyan</div><div class="sw-h">#22D3EE</div><div class="sw-u">ECG, outline, wordmark</div></div>
+      </div>
+      <div class="sw">
+        <div class="sw-c" style="background:#3ddc84;"></div>
+        <div class="sw-b"><div class="sw-n">Urban Green</div><div class="sw-h">#3DDC84</div><div class="sw-u">Skyline, saúde</div></div>
+      </div>
+      <div class="sw">
+        <div class="sw-c" style="background:#f0f0ed;"></div>
+        <div class="sw-b"><div class="sw-n">Texto</div><div class="sw-h">#F0F0ED</div><div class="sw-u">Wordmark, corpo</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section>
+    <div class="dl-box">
+      <div class="dl-info">
+        <div class="dl-title">Download do Logo</div>
+        <p class="dl-sub">Arquivo vetorial SVG (escalável sem perda de qualidade) e PNG em alta resolução.</p>
+      </div>
+      <div class="dl-btns">
+        <button class="btn primary"    onclick="dlSVG()">↓ SVG Vetorial</button>
+        <button class="btn secondary"  onclick="dlPNG(512)">↓ PNG 512 px</button>
+        <button class="btn secondary"  onclick="dlPNG(1024)">↓ PNG 1024 px</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── SVG LOGO FACTORY ─────────────────────────────────────── */
+let _n = 0;
+function mkLogo(size, anim) {
+  const id = ++_n;
+  const ha = anim ? ' class="anim-h"'  : '';
+  const ea = anim ? ' class="anim-e"'  : '';
+  const d1 = anim ? ' class="anim-d1"' : '';
+  const d2 = anim ? ' class="anim-d2"' : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}">
+<defs>
+<filter id="ga${id}" x="-40%" y="-40%" width="180%" height="180%">
+  <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<filter id="gb${id}" x="-50%" y="-50%" width="200%" height="200%">
+  <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<clipPath id="hc${id}">
+  <path d="M100 168C62 144 24 114 24 80C24 50 44 32 68 32C81 32 93 39 100 50C107 39 119 32 132 32C156 32 176 50 176 80C176 114 138 144 100 168Z"/>
+</clipPath>
+<linearGradient id="bgr${id}" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%"   stop-color="#3ddc84" stop-opacity="0.9"/>
+  <stop offset="60%"  stop-color="#3ddc84" stop-opacity="0.5"/>
+  <stop offset="100%" stop-color="#3ddc84" stop-opacity="0.12"/>
+</linearGradient>
+<linearGradient id="sgr${id}" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%"   stop-color="#22d3ee"/>
+  <stop offset="100%" stop-color="#3ddc84"/>
+</linearGradient>
+<linearGradient id="sky${id}" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%"   stop-color="#22d3ee" stop-opacity="0.10"/>
+  <stop offset="100%" stop-color="#0a0e1a" stop-opacity="0"/>
+</linearGradient>
+</defs>
+<rect width="200" height="200" rx="32" fill="#0a0e1a"/>
+<g clip-path="url(#hc${id})">
+  <rect width="200" height="200" fill="#0c1220"/>
+  <rect width="200" height="200" fill="url(#sky${id})"/>
+  <rect x="26"  y="122" width="12" height="50" rx="1" fill="url(#bgr${id})"/>
+  <rect x="40"  y="104" width="10" height="68" rx="1" fill="url(#bgr${id})"/>
+  <rect x="52"  y="114" width="11" height="58" rx="1" fill="url(#bgr${id})"/>
+  <rect x="65"  y="96"  width="11" height="76" rx="1" fill="url(#bgr${id})"/>
+  <rect x="78"  y="108" width="13" height="64" rx="1" fill="url(#bgr${id})"/>
+  <rect x="93"  y="100" width="11" height="72" rx="1" fill="url(#bgr${id})"/>
+  <rect x="106" y="88"  width="12" height="84" rx="1" fill="url(#bgr${id})"/>
+  <rect x="120" y="102" width="10" height="70" rx="1" fill="url(#bgr${id})"/>
+  <rect x="132" y="110" width="12" height="62" rx="1" fill="url(#bgr${id})"/>
+  <rect x="146" y="98"  width="11" height="74" rx="1" fill="url(#bgr${id})"/>
+  <rect x="159" y="118" width="13" height="54" rx="1" fill="url(#bgr${id})"/>
+  <path${ea} d="M24 97 L50 97 L58 117 L75 53 L83 97 L100 97 L109 117 L126 53 L134 97 L176 97"
+    stroke="#22d3ee" stroke-width="2.5" fill="none"
+    stroke-linecap="round" stroke-linejoin="round"
+    filter="url(#ga${id})"/>
+  <circle${d1} cx="75"  cy="53" r="3" fill="#22d3ee" filter="url(#ga${id})"/>
+  <circle${d2} cx="126" cy="53" r="3" fill="#22d3ee" filter="url(#ga${id})"/>
+</g>
+<path${ha} d="M100 168C62 144 24 114 24 80C24 50 44 32 68 32C81 32 93 39 100 50C107 39 119 32 132 32C156 32 176 50 176 80C176 114 138 144 100 168Z"
+  fill="none" stroke="url(#sgr${id})" stroke-width="2.5" filter="url(#gb${id})"/>
+</svg>`;
+}
+
+/* ─── POPULATE ───────────────────────────────────────────── */
+document.getElementById('logo-main').innerHTML = mkLogo(290, true);
+document.getElementById('lk-dk').innerHTML    = mkLogo(52, false);
+document.getElementById('lk-ic').innerHTML    = mkLogo(80, false);
+document.getElementById('lk-lt').innerHTML    = mkLogo(52, false);
+document.getElementById('sz-128').innerHTML   = mkLogo(128, false);
+document.getElementById('sz-64').innerHTML    = mkLogo(64, false);
+document.getElementById('sz-40').innerHTML    = mkLogo(40, false);
+document.getElementById('sz-24').innerHTML    = mkLogo(24, false);
+
+/* ─── SVG SOURCE (clean, static, no animation classes) ───── */
+function svgSource() {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="sg" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="hc">
+      <path d="M100 168C62 144 24 114 24 80C24 50 44 32 68 32C81 32 93 39 100 50C107 39 119 32 132 32C156 32 176 50 176 80C176 114 138 144 100 168Z"/>
+    </clipPath>
+    <linearGradient id="bgr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#3ddc84" stop-opacity="0.9"/>
+      <stop offset="60%"  stop-color="#3ddc84" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#3ddc84" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="sgr" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#3ddc84"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#22d3ee" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#0a0e1a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="32" fill="#0a0e1a"/>
+  <g clip-path="url(#hc)">
+    <rect width="200" height="200" fill="#0c1220"/>
+    <rect width="200" height="200" fill="url(#sky)"/>
+    <rect x="26"  y="122" width="12" height="50" rx="1" fill="url(#bgr)"/>
+    <rect x="40"  y="104" width="10" height="68" rx="1" fill="url(#bgr)"/>
+    <rect x="52"  y="114" width="11" height="58" rx="1" fill="url(#bgr)"/>
+    <rect x="65"  y="96"  width="11" height="76" rx="1" fill="url(#bgr)"/>
+    <rect x="78"  y="108" width="13" height="64" rx="1" fill="url(#bgr)"/>
+    <rect x="93"  y="100" width="11" height="72" rx="1" fill="url(#bgr)"/>
+    <rect x="106" y="88"  width="12" height="84" rx="1" fill="url(#bgr)"/>
+    <rect x="120" y="102" width="10" height="70" rx="1" fill="url(#bgr)"/>
+    <rect x="132" y="110" width="12" height="62" rx="1" fill="url(#bgr)"/>
+    <rect x="146" y="98"  width="11" height="74" rx="1" fill="url(#bgr)"/>
+    <rect x="159" y="118" width="13" height="54" rx="1" fill="url(#bgr)"/>
+    <path d="M24 97 L50 97 L58 117 L75 53 L83 97 L100 97 L109 117 L126 53 L134 97 L176 97"
+      stroke="#22d3ee" stroke-width="2.5" fill="none"
+      stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+    <circle cx="75"  cy="53" r="3" fill="#22d3ee" filter="url(#glow)"/>
+    <circle cx="126" cy="53" r="3" fill="#22d3ee" filter="url(#glow)"/>
+  </g>
+  <path d="M100 168C62 144 24 114 24 80C24 50 44 32 68 32C81 32 93 39 100 50C107 39 119 32 132 32C156 32 176 50 176 80C176 114 138 144 100 168Z"
+    fill="none" stroke="url(#sgr)" stroke-width="2.5" filter="url(#sg)"/>
+</svg>`;
+}
+
+/* ─── TOAST ─────────────────────────────────────────────── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ─── DOWNLOAD SVG ───────────────────────────────────────── */
+function dlSVG() {
+  const blob = new Blob([svgSource()], { type: 'image/svg+xml' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'pulso-urbano-logo.svg';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('SVG baixado com sucesso ✓');
+}
+
+/* ─── DOWNLOAD PNG ───────────────────────────────────────── */
+function dlPNG(size) {
+  const src = svgSource().replace(
+    'width="200" height="200"',
+    `width="${size}" height="${size}"`
+  );
+  const blob = new Blob([src], { type: 'image/svg+xml' });
+  const url  = URL.createObjectURL(blob);
+  const img  = new Image();
+  img.onload = () => {
+    const c   = document.createElement('canvas');
+    c.width   = size; c.height = size;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0, size, size);
+    c.toBlob(pngBlob => {
+      const pu = URL.createObjectURL(pngBlob);
+      const a  = document.createElement('a');
+      a.href = pu; a.download = `pulso-urbano-logo-${size}x${size}.png`;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(pu); URL.revokeObjectURL(url);
+      showToast(`PNG ${size}×${size} baixado ✓`);
+    }, 'image/png');
+  };
+  img.onerror = () => showToast('Use o SVG para melhor qualidade.');
+  img.src = url;
+}
+</script>
+</body>
+</html>
