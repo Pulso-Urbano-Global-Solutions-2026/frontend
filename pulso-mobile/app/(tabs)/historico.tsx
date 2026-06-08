@@ -12,7 +12,13 @@ import type { ClassificacaoScore, ScoreHistoricoItem } from '@/types/score.types
 import { formatDate, formatDayLabel } from '@/utils/dateUtils';
 import { getClassificacaoColor } from '@/utils/scoreUtils';
 
-// Interpreta os últimos 3 scores e retorna a tendência
+function scoreToColor(s: number): string {
+  if (s >= 80) return Colors.bom;
+  if (s >= 60) return Colors.moderado;
+  if (s >= 40) return Colors.ruim;
+  return Colors.critico;
+}
+
 function calcTendencia(scores: number[]): 'melhorando' | 'piorando' | null {
   if (scores.length < 3) return null;
   const last3 = scores.slice(-3);
@@ -22,10 +28,19 @@ function calcTendencia(scores: number[]): 'melhorando' | 'piorando' | null {
   return null;
 }
 
-// Formata "2026-06-01" → "01/06"
 function dtShort(dt: string) {
   const [, m, d] = dt.split('-');
   return `${d}/${m}`;
+}
+
+// ── HV-04: Card de estatística de período ────────────────────────────────────
+function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <View style={[styles.statCard, { borderColor: color + '44' }]}>
+      <Text style={[styles.statValue, { color }]}>{Math.round(value)}</Text>
+      <Text style={styles.statLabel}>{label}</Text>
+    </View>
+  );
 }
 
 export default function HistoricoScreen() {
@@ -56,17 +71,27 @@ export default function HistoricoScreen() {
   const selectedItem: ScoreHistoricoItem | null =
     selectedIdx !== null ? (sorted[selectedIdx] ?? null) : null;
 
-  const renderItem = ({ item }: { item: ScoreHistoricoItem }) => (
-    <View style={styles.card}>
-      <View style={styles.cardRow}>
-        <Text style={styles.cardDate}>{formatDate(item.dt)}</Text>
-        <Text style={[styles.cardScore, { color: getClassificacaoColor(item.classificacao) }]}>
-          {Math.round(item.score)}
-        </Text>
+  // HV-04: calcular estatísticas do período
+  const avg  = sorted.length > 0 ? sorted.reduce((s, h) => s + h.score, 0) / sorted.length : 0;
+  const best = sorted.length > 0 ? Math.max(...sorted.map((h) => h.score)) : 0;
+  const worst= sorted.length > 0 ? Math.min(...sorted.map((h) => h.score)) : 0;
+
+  const renderItem = ({ item }: { item: ScoreHistoricoItem }) => {
+    const scoreColor = getClassificacaoColor(item.classificacao);
+    return (
+      <View style={[styles.card, { borderLeftColor: scoreColor, borderLeftWidth: 3 }]}>
+        <View style={styles.cardRow}>
+          <View style={styles.cardLeft}>
+            <Text style={styles.cardDate}>{formatDate(item.dt)}</Text>
+            <ClassificacaoBadge classificacao={item.classificacao} size="sm" />
+          </View>
+          <Text style={[styles.cardScore, { color: scoreColor }]}>
+            {Math.round(item.score)}
+          </Text>
+        </View>
       </View>
-      <ClassificacaoBadge classificacao={item.classificacao} size="sm" />
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -101,6 +126,13 @@ export default function HistoricoScreen() {
 
         {sorted.length > 0 && (
           <>
+            {/* HV-04: Sumário — média, melhor e pior do período */}
+            <View style={styles.statsRow}>
+              <StatCard label="Média"   value={avg}   color={scoreToColor(avg)}  />
+              <StatCard label="Melhor"  value={best}  color={Colors.bom}         />
+              <StatCard label="Pior"    value={worst} color={Colors.critico}     />
+            </View>
+
             <View style={styles.chart}>
               <LineChart
                 data={chartData}
@@ -145,6 +177,7 @@ export default function HistoricoScreen() {
               )}
             </View>
 
+            {/* HV-05: Lista de dias com barra lateral colorida */}
             <FlatList
               data={sorted}
               keyExtractor={(item) => item.dt}
@@ -172,6 +205,17 @@ const styles = StyleSheet.create({
   },
   tendenciaText: { fontFamily: Typography.font.subheading, fontSize: Typography.size.xs },
 
+  // HV-04: stat cards
+  statsRow: { flexDirection: 'row', gap: 10 },
+  statCard: {
+    flex: 1, alignItems: 'center', gap: 2,
+    backgroundColor: Colors.surface,
+    borderRadius: 12, borderWidth: 1,
+    paddingVertical: 12,
+  },
+  statValue: { fontFamily: Typography.font.mono, fontSize: Typography.size.xl, fontWeight: '500' },
+  statLabel: { fontFamily: Typography.font.body, fontSize: Typography.size.xs, color: Colors.textMuted },
+
   chart: {
     backgroundColor: Colors.surface, borderRadius: 12,
     paddingTop: 12, paddingBottom: 4, overflow: 'hidden',
@@ -185,8 +229,14 @@ const styles = StyleSheet.create({
   tooltipDate:  { fontFamily: Typography.font.mono, fontSize: Typography.size.xs, color: Colors.textMuted },
   tooltipScore: { fontFamily: Typography.font.heading, fontSize: Typography.size.lg },
 
-  card:     { backgroundColor: Colors.surface, borderRadius: 8, padding: 12, marginBottom: 8, gap: 8 },
-  cardRow:  { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cardDate: { fontFamily: Typography.font.body, color: Colors.textMuted, fontSize: Typography.size.sm },
-  cardScore:{ fontFamily: Typography.font.mono, fontSize: Typography.size.lg },
+  // HV-05: improved day cards
+  card: {
+    backgroundColor: Colors.surface, borderRadius: 8, padding: 12,
+    marginBottom: 8, borderWidth: 1, borderColor: Colors.border,
+    borderLeftWidth: 3,
+  },
+  cardRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  cardLeft:  { gap: 6 },
+  cardDate:  { fontFamily: Typography.font.body, color: Colors.textMuted, fontSize: Typography.size.sm },
+  cardScore: { fontFamily: Typography.font.mono, fontSize: 28, fontWeight: '500' },
 });

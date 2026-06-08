@@ -35,8 +35,9 @@ function MetricItem({ label, value }: { label: string; value: string }) {
 }
 
 function ZonaCard({ zona, onVerMapa }: { zona: VulnerabilidadeZona; onVerMapa: () => void }) {
-  const cfg   = CFG[zona.urgencia];
+  const cfg    = CFG[zona.urgencia];
   const indice = zona.indiceVulnerabilidade;
+  const popM   = (zona.populacaoTotal / 1_000_000).toFixed(1);
 
   return (
     <View style={[s.card, { borderColor: cfg.cor, backgroundColor: cfg.fundo }]}>
@@ -48,8 +49,16 @@ function ZonaCard({ zona, onVerMapa }: { zona: VulnerabilidadeZona; onVerMapa: (
             <Text style={[s.badgeText, { color: cfg.cor }]}>{cfg.label}</Text>
           </View>
         </View>
-        <Text style={[s.indice, { color: cfg.cor }]}>{indice.toFixed(0)}</Text>
+        {/* HV-03: chip de índice com cor + "/ 100" */}
+        <View style={[s.scoreChip, { backgroundColor: cfg.cor + '1a', borderColor: cfg.cor }]}>
+          <Text style={[s.scoreChipNum, { color: cfg.cor }]}>{indice.toFixed(0)}</Text>
+          <Text style={[s.scoreChipSlash, { color: cfg.cor }]}>/100</Text>
+        </View>
       </View>
+      {/* HV-03: pessoas em risco */}
+      <Text style={[s.pessoasRisco, { color: cfg.cor }]}>
+        {popM}M pessoas em área de risco {cfg.label.toLowerCase()}
+      </Text>
 
       {/* Barra de progresso do índice — torna o número comparável entre zonas */}
       <View style={s.progressTrack}>
@@ -148,7 +157,14 @@ const s = StyleSheet.create({
   zonaNome:    { fontFamily: Typography.font.heading, fontSize: Typography.size.md, color: Colors.text },
   badge:       { alignSelf: 'flex-start', borderWidth: 1, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
   badgeText:   { fontFamily: Typography.font.subheading, fontSize: Typography.size.xs, letterSpacing: 0.5 },
-  indice:      { fontFamily: Typography.font.heading, fontSize: 28, lineHeight: 32 },
+  // HV-03: score chip
+  scoreChip:      {
+    alignItems: 'center', justifyContent: 'center',
+    borderRadius: 10, borderWidth: 1, padding: 8, minWidth: 56,
+  },
+  scoreChipNum:   { fontFamily: Typography.font.mono, fontSize: 22, lineHeight: 24, fontWeight: '700' },
+  scoreChipSlash: { fontFamily: Typography.font.mono, fontSize: 10, opacity: 0.7 },
+  pessoasRisco:   { fontFamily: Typography.font.body, fontSize: Typography.size.xs, opacity: 0.85 },
   progressTrack:{ height: 4, borderRadius: 2, backgroundColor: Colors.surface2, overflow: 'hidden' },
   progressBar: { height: 4, borderRadius: 2 },
   descricao:   { fontFamily: Typography.font.body, fontSize: Typography.size.sm, color: Colors.textMuted, lineHeight: 18 },

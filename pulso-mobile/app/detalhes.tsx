@@ -108,8 +108,24 @@ export default function DetalhesScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Como calculamos o score?</Text>
           <Text style={styles.sectionBody}>
-            {'score = (1 − NO₂ / 50) × 60 + (1 − max(0, Temp − 30) / 20) × 40'}
+            Combinamos NO₂ (60% do peso) e temperatura de superfície (40%) em um índice de 0 a 100:
           </Text>
+          {/* DC-05: fórmula em bloco de código estilizado */}
+          <View style={styles.codeBlock}>
+            <Text style={styles.codeComment}>{'// parcela ar'}</Text>
+            <Text style={styles.codeLine}>
+              ar{'  '}<Text style={styles.codeOp}>=</Text>{' (1 − NO₂ / 50) × 60'}
+            </Text>
+            <Text style={[styles.codeComment, { marginTop: 8 }]}>{'// parcela calor'}</Text>
+            <Text style={styles.codeLine}>
+              {'cal '}<Text style={styles.codeOp}>=</Text>{' (1 − max(0, Temp − 30) / 20) × 40'}
+            </Text>
+            <View style={styles.codeDivider} />
+            <Text style={styles.codeLine}>
+              <Text style={styles.codeKeyword}>score</Text>
+              {'  '}<Text style={styles.codeOp}>=</Text>{' ar + cal'}
+            </Text>
+          </View>
           <Text style={[styles.sectionBody, { marginTop: 12, marginBottom: 8 }]}>
             Classificação visual:
           </Text>
@@ -155,6 +171,18 @@ const styles = StyleSheet.create({
   rulerLabelCol: { alignItems: 'center', paddingTop: 4 },
   rulerRange:    { fontFamily: Typography.font.mono, fontSize: 9, lineHeight: 12 },
   rulerDesc:     { fontFamily: Typography.font.subheading, fontSize: 9, lineHeight: 12 },
+
+  // DC-05: code block
+  codeBlock:   {
+    backgroundColor: Colors.bg, borderRadius: 8,
+    borderWidth: 1, borderColor: Colors.border,
+    padding: 14, marginTop: 12, gap: 4,
+  },
+  codeComment: { fontFamily: Typography.font.mono, fontSize: 12, color: Colors.textDim },
+  codeLine:    { fontFamily: Typography.font.mono, fontSize: 13, color: Colors.text, lineHeight: 20 },
+  codeOp:      { color: Colors.cyan },
+  codeKeyword: { color: Colors.bom },
+  codeDivider: { height: 1, backgroundColor: Colors.border, marginVertical: 6 },
 
   // Source cards
   sourceCard: {
