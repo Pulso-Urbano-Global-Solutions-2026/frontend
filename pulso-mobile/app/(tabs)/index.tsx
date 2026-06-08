@@ -1,11 +1,11 @@
 // app/(tabs)/index.tsx — adiciona alerta de pet quando temp > 35°C
 import { useEffect, useState } from 'react';
-import { agendarNotificacaoDiaria } from '@/services/notificationService';
 import { RefreshControl, SafeAreaView, ScrollView, StyleSheet,
          Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
+import { agendarNotificacaoDiaria } from '@/services/notificationService';
 import ScoreGauge from '@/components/ScoreGauge/ScoreGauge';
 import ClassificacaoBadge from '@/components/ClassificacaoBadge/ClassificacaoBadge';
 import RecomendacaoCard from '@/components/RecomendacaoCard/RecomendacaoCard';
