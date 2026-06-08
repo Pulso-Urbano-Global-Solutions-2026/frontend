@@ -1,22 +1,33 @@
-import * as Notifications from 'expo-notifications';
+import type * as NotificationsModule from 'expo-notifications';
 import { Platform } from 'react-native';
 import type { ClassificacaoScore } from '@/types/score.types';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+// expo-notifications auto-registers for push tokens at import time, which throws in
+// Expo Go since SDK 53. Lazy-require inside try-catch so the module still loads.
+// All functions become no-ops when N is null (Expo Go). Scheduled local
+// notifications won't fire in Expo Go — acceptable for this environment.
+let N: typeof NotificationsModule | null = null;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  N = require('expo-notifications') as typeof NotificationsModule;
+  N.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+} catch {
+  // Expo Go: push token auto-registration throws — notifications silently disabled
+}
 
 export async function requestPermissions(): Promise<boolean> {
-  if (Platform.OS === 'web') return false;
-  const { status: existing } = await Notifications.getPermissionsAsync();
+  if (Platform.OS === 'web' || !N) return false;
+  const { status: existing } = await N.getPermissionsAsync();
   if (existing === 'granted') return true;
-  const { status } = await Notifications.requestPermissionsAsync();
+  const { status } = await N.requestPermissionsAsync();
   return status === 'granted';
 }
 
@@ -44,12 +55,12 @@ function corpoFor(score: number, c: ClassificacaoScore, no2: number, temp: numbe
 ${dica[c]}`;
 }
 
-async function cancelarAnterior(): Promise<void> {
-  const agendadas = await Notifications.getAllScheduledNotificationsAsync();
+async function cancelarAnterior(n: typeof NotificationsModule): Promise<void> {
+  const agendadas = await n.getAllScheduledNotificationsAsync();
   await Promise.all(
     agendadas
-      .filter((n) => n.identifier.startsWith('pulso-diario'))
-      .map((n) => Notifications.cancelScheduledNotificationAsync(n.identifier))
+      .filter((item) => item.identifier.startsWith('pulso-diario'))
+      .map((item) => n.cancelScheduledNotificationAsync(item.identifier))
   );
 }
 
@@ -59,13 +70,14 @@ export async function agendarNotificacaoDiaria(params: {
   no2Ppb: number;
   tempSuperficieC: number;
 }): Promise<void> {
+  if (!N) return;
   const ok = await requestPermissions();
   if (!ok) return;
-  await cancelarAnterior();
+  await cancelarAnterior(N);
   const proximas7h = new Date();
   proximas7h.setHours(7, 0, 0, 0);
   if (new Date() >= proximas7h) proximas7h.setDate(proximas7h.getDate() + 1);
-  await Notifications.scheduleNotificationAsync({
+  await N.scheduleNotificationAsync({
     identifier: `pulso-diario-${proximas7h.toISOString().slice(0, 10)}`,
     content: {
       title: tituloFor(params.classificacao),
@@ -73,7 +85,7 @@ export async function agendarNotificacaoDiaria(params: {
       data:  { type: 'score_diario' },
     },
     trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      type: N.SchedulableTriggerInputTypes.DATE,
       date: proximas7h,
     },
   });
