@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { RefreshControl, SafeAreaView, ScrollView, StyleSheet,
          Text, TouchableOpacity, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
@@ -78,17 +79,22 @@ export default function HomeScreen() {
             <ClassificacaoBadge classificacao={data.classificacao} size="md" />
 
             {/* Métricas brutas */}
-            <View style={styles.metrics}>
+            <LinearGradient
+              colors={[Colors.surface, Colors.bg]}
+              style={styles.metrics}
+            >
               <View style={styles.metricItem}>
+                <Ionicons name="cloud-outline" size={16} color={Colors.textDim} style={styles.metricIcon} />
                 <Text style={styles.metricValue}>{data.no2Ppb.toFixed(1)}</Text>
                 <Text style={styles.metricLabel}>NO₂ (ppb)</Text>
               </View>
               <View style={styles.metricDivider} />
               <View style={styles.metricItem}>
+                <Ionicons name="thermometer-outline" size={16} color={Colors.textDim} style={styles.metricIcon} />
                 <Text style={styles.metricValue}>{data.tempSuperficieC.toFixed(1)}</Text>
                 <Text style={styles.metricLabel}>Temp. sup. (°C)</Text>
               </View>
-            </View>
+            </LinearGradient>
 
             {/* ── Alerta de pet ─────────────────────────────────── */}
             {petAlertaAtivo && (
@@ -133,15 +139,25 @@ const styles = StyleSheet.create({
   content:     { flexGrow: 1, padding: 20, gap: 16, alignItems: 'center' },
   headerRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' },
   headerCity:  { fontFamily: Typography.font.mono, fontSize: Typography.size.xs, color: Colors.textDim, letterSpacing: 2 },
-  metrics:     {
+  metrics:      {
     flexDirection: 'row', width: '100%',
-    backgroundColor: Colors.surface, borderRadius: 12,
-    borderWidth: 1, borderColor: Colors.border,
+    borderRadius: 12, borderWidth: 1, borderColor: Colors.border,
+    overflow: 'hidden',
   },
   metricItem:   { flex: 1, alignItems: 'center', paddingVertical: 14 },
+  metricIcon:   { marginBottom: 4 },
   metricDivider:{ width: 1, backgroundColor: Colors.border, marginVertical: 10 },
-  metricValue:  { fontSize: Typography.size.lg, fontWeight: '700', color: Colors.text },
-  metricLabel:  { fontSize: Typography.size.xs, color: Colors.textMuted, marginTop: 2 },
+  metricValue:  {
+    fontFamily: Typography.font.mono,
+    fontSize: Typography.size.lg,
+    color: Colors.text,
+  },
+  metricLabel:  {
+    fontFamily: Typography.font.body,
+    fontSize: Typography.size.xs,
+    color: Colors.textMuted,
+    marginTop: 2,
+  },
   recSkeleton:  { width: '100%' },
   recError:     { color: Colors.textMuted, fontSize: Typography.size.sm, textAlign: 'center' },
   fonte:        { color: Colors.textDim, fontSize: Typography.size.xs, textAlign: 'center', marginTop: 8 },
