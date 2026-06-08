@@ -1,38 +1,43 @@
-// app/perfil.tsx — adiciona temPet via SecureStore (sem tocar no backend)
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SafeAreaView, ScrollView, StyleSheet,
-         Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, StyleSheet,
+         Switch, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
+import { Button } from '@/components/Button/Button';
 import ErrorState from '@/components/ErrorState/ErrorState';
 import LoadingSkeleton from '@/components/LoadingSkeleton/LoadingSkeleton';
+import { Toast } from '@/components/Toast/Toast';
 import { Colors } from '@/constants/colors';
 import { Typography } from '@/constants/typography';
 import { useAuthContext } from '@/contexts/AuthContext';
 import * as usuarioService from '@/services/usuarioService';
 import type { UsuarioResponse } from '@/types/usuario.types';
 
-// Chave para persistir a preferência de pet por usuário
 const petKey = (id: number) => `pulso_tem_pet_${id}`;
 
 export default function PerfilScreen() {
   const { userId, logout } = useAuthContext();
   const router = useRouter();
 
-  const [usuario, setUsuario]       = useState<UsuarioResponse | null>(null);
-  const [nome, setNome]             = useState('');
+  const [usuario, setUsuario]           = useState<UsuarioResponse | null>(null);
+  const [nome, setNome]                 = useState('');
   const [fazExercicio, setFazExercicio] = useState(false);
-  const [temCrianca, setTemCrianca] = useState(false);
-  const [temProblema, setTemProblema] = useState(false);
-  const [temPet, setTemPet]         = useState(false);  // ← novo
-  const [loadingData, setLoadingData] = useState(true);
-  const [saving, setSaving]         = useState(false);
-  const [error, setError]           = useState<string | null>(null);
+  const [temCrianca, setTemCrianca]     = useState(false);
+  const [temProblema, setTemProblema]   = useState(false);
+  const [temPet, setTemPet]             = useState(false);
+  const [loadingData, setLoadingData]   = useState(true);
+  const [saving, setSaving]             = useState(false);
+  const [error, setError]               = useState<string | null>(null);
+
+  const [toast, setToast] = useState<{ visible: boolean; message: string; variant: 'success' | 'error' }>({
+    visible: false, message: '', variant: 'success',
+  });
+  const showToast = (message: string, variant: 'success' | 'error') =>
+    setToast({ visible: true, message, variant });
 
   useEffect(() => {
     if (!userId) { router.replace('/(auth)/login'); return; }
 
-    // Carrega perfil do backend + preferência de pet do SecureStore em paralelo
     Promise.all([
       usuarioService.getById(userId),
       SecureStore.getItemAsync(petKey(userId)),
@@ -43,9 +48,12 @@ export default function PerfilScreen() {
         setFazExercicio(u.fazExercicio);
         setTemCrianca(u.temCrianca);
         setTemProblema(u.temProblemaRespiratorio);
-        setTemPet(petStored === 'true');   // ← restaura preferência
+        setTemPet(petStored === 'true');
       })
-      .catch((e) => setError(e?.response?.data?.erro ?? e?.message ?? 'Erro ao carregar perfil'))
+      .catch((e: unknown) => {
+        const err = e as { response?: { data?: { erro?: string } }; message?: string };
+        setError(err?.response?.data?.erro ?? err?.message ?? 'Erro ao carregar perfil');
+      })
       .finally(() => setLoadingData(false));
   }, [userId, router]);
 
@@ -53,18 +61,15 @@ export default function PerfilScreen() {
     if (!userId) return;
     setSaving(true);
     try {
-      // Salva campos do backend normalmente
       const updated = await usuarioService.update(userId, {
         nome, fazExercicio, temCrianca, temProblemaRespiratorio: temProblema,
       });
       setUsuario(updated);
-
-      // Salva temPet localmente (SecureStore — sem precisar tocar no Java)
       await SecureStore.setItemAsync(petKey(userId), String(temPet));
-
-      Alert.alert('Sucesso', 'Perfil atualizado!');
-    } catch (e: any) {
-      Alert.alert('Erro', e?.response?.data?.erro ?? e?.message ?? 'Erro ao salvar');
+      showToast('Perfil salvo com sucesso', 'success');
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { erro?: string } }; message?: string };
+      showToast(err?.response?.data?.erro ?? err?.message ?? 'Erro ao salvar', 'error');
     } finally { setSaving(false); }
   };
 
@@ -77,12 +82,12 @@ export default function PerfilScreen() {
           if (!userId) return;
           try {
             await usuarioService.remove(userId);
-            // Limpa preferência de pet ao deletar conta
             await SecureStore.deleteItemAsync(petKey(userId));
             await logout();
             router.replace('/(auth)/login');
-          } catch (e: any) {
-            Alert.alert('Erro', e?.response?.data?.erro ?? 'Erro ao excluir conta');
+          } catch (e: unknown) {
+            const err = e as { response?: { data?: { erro?: string } }; message?: string };
+            showToast(err?.response?.data?.erro ?? 'Erro ao excluir conta', 'error');
           }
         },
       },
@@ -104,7 +109,7 @@ export default function PerfilScreen() {
     { label: 'Pratico exercícios regularmente', value: fazExercicio, onChange: setFazExercicio },
     { label: 'Tenho crianças em casa',          value: temCrianca,   onChange: setTemCrianca   },
     { label: 'Tenho problema respiratório',     value: temProblema,  onChange: setTemProblema  },
-    { label: 'Tenho pet em casa 🐾',            value: temPet,       onChange: setTemPet       }, // ← novo
+    { label: 'Tenho pet em casa 🐾',            value: temPet,       onChange: setTemPet       },
   ];
 
   return (
@@ -128,53 +133,46 @@ export default function PerfilScreen() {
           </View>
         ))}
 
-        <TouchableOpacity style={styles.saveBtn} onPress={handleSave} disabled={saving}>
-          {saving
-            ? <ActivityIndicator color={Colors.bg} />
-            : <Text style={styles.saveBtnText}>Salvar</Text>}
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Sair</Text>
-        </TouchableOpacity>
+        <Button label="Salvar" onPress={() => void handleSave()} loading={saving} variant="primary" />
+        <Button label="Sair"   onPress={() => void handleLogout()} variant="secondary" />
 
         <View style={styles.danger}>
           <Text style={styles.dangerTitle}>Zona de Perigo</Text>
-          <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
-            <Text style={styles.deleteText}>Excluir conta</Text>
-          </TouchableOpacity>
+          <Button label="Excluir conta" onPress={handleDelete} variant="danger" size="sm" />
         </View>
       </ScrollView>
+
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        variant={toast.variant}
+        onHide={() => setToast((t) => ({ ...t, visible: false }))}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe:         { flex: 1, backgroundColor: Colors.bg },
-  skeleton:     { padding: 20 },
-  content:      { flexGrow: 1, padding: 20, gap: 12 },
-  title:        { fontSize: Typography.size.xl, fontWeight: '700', color: Colors.text },
-  email:        { fontSize: Typography.size.sm, color: Colors.textMuted, marginBottom: 8 },
-  input:        {
+  safe:        { flex: 1, backgroundColor: Colors.bg },
+  skeleton:    { padding: 20 },
+  content:     { flexGrow: 1, padding: 20, gap: 12 },
+  title:       { fontFamily: Typography.font.heading,  fontSize: Typography.size.xl, color: Colors.text },
+  email:       { fontFamily: Typography.font.body, fontSize: Typography.size.sm, color: Colors.textMuted, marginBottom: 8 },
+  input:       {
+    fontFamily: Typography.font.body,
     backgroundColor: Colors.surface, borderColor: Colors.border, borderWidth: 1,
     borderRadius: 8, padding: 14, color: Colors.text, fontSize: Typography.size.md,
   },
-  row:          {
+  row:         {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: Colors.border,
   },
-  rowLabel:     { flex: 1, color: Colors.text, fontSize: Typography.size.md, marginRight: 12 },
-  saveBtn:      {
-    backgroundColor: Colors.bom, borderRadius: 8, padding: 14,
-    alignItems: 'center', marginTop: 8,
+  rowLabel:    { flex: 1, fontFamily: Typography.font.body, color: Colors.text, fontSize: Typography.size.md, marginRight: 12 },
+  danger:      {
+    borderWidth: 1, borderColor: Colors.critico, borderRadius: 12, padding: 16, marginTop: 16, gap: 12,
   },
-  saveBtnText:  { color: Colors.bg, fontWeight: '700', fontSize: Typography.size.md },
-  logoutBtn:    { backgroundColor: Colors.surface2, borderRadius: 8, padding: 14, alignItems: 'center' },
-  logoutText:   { color: Colors.text, fontSize: Typography.size.md },
-  danger:       {
-    borderWidth: 1, borderColor: Colors.critico, borderRadius: 12, padding: 16, marginTop: 16,
+  dangerTitle: {
+    fontFamily: Typography.font.subheading,
+    color: Colors.critico, fontSize: Typography.size.sm,
   },
-  dangerTitle:  { color: Colors.critico, fontWeight: '700', fontSize: Typography.size.sm, marginBottom: 12 },
-  deleteBtn:    { backgroundColor: Colors.criticoDim, borderRadius: 8, padding: 12, alignItems: 'center' },
-  deleteText:   { color: Colors.critico, fontWeight: '700', fontSize: Typography.size.md },
 });
