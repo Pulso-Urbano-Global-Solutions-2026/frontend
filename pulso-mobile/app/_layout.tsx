@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import {
@@ -15,6 +16,7 @@ import {
 import { AuthProvider, useAuthContext } from '@/contexts/AuthContext';
 import { authEvents } from '@/services/authEvents';
 import { Colors } from '@/constants/colors';
+import { Logo } from '@/components/Logo/Logo';
 import { requestPermissions } from '@/services/notificationService';
 
 SplashScreen.preventAutoHideAsync();
@@ -36,10 +38,21 @@ function RootLayoutInner() {
 
   const fontsReady = spaceLoaded && monoLoaded;
 
-  // Splash fica até auth E fontes estarem prontos.
+  // Animated intro overlay: native splash → 1.2s logo animation → content
+  const [introVisible, setIntroVisible] = useState(true);
+  const introOpacity = useRef(new Animated.Value(1)).current;
+
   useEffect(() => {
-    if (isLoaded && fontsReady) void SplashScreen.hideAsync();
-  }, [isLoaded, fontsReady]);
+    if (!isLoaded || !fontsReady) return;
+    // Show RN content, hide native splash, then fade out our logo overlay
+    void SplashScreen.hideAsync();
+    const timer = setTimeout(() => {
+      Animated.timing(introOpacity, {
+        toValue: 0, duration: 400, useNativeDriver: true,
+      }).start(() => setIntroVisible(false));
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [isLoaded, fontsReady, introOpacity]);
 
   useEffect(() => {
     return authEvents.on('unauthorized', () => router.replace('/(auth)/login'));
@@ -57,15 +70,34 @@ function RootLayoutInner() {
   }, []);
 
   return (
-    <Stack screenOptions={{ headerStyle: { backgroundColor: Colors.bg }, headerTintColor: Colors.text }}>
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="perfil" options={{ title: 'Perfil' }} />
-      <Stack.Screen name="detalhes" options={{ title: 'Detalhes' }} />
-      <Stack.Screen name="vulnerabilidade" options={{ title: 'Vulnerabilidade' }} />
-    </Stack>
+    <View style={styles.root}>
+      <Stack screenOptions={{ headerStyle: { backgroundColor: Colors.bg }, headerTintColor: Colors.text }}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="perfil" options={{ title: 'Perfil' }} />
+        <Stack.Screen name="detalhes" options={{ title: 'Detalhes' }} />
+        <Stack.Screen name="vulnerabilidade" options={{ title: 'Vulnerabilidade' }} />
+      </Stack>
+
+      {/* Animated logo overlay: bridges native splash to live content */}
+      {introVisible && (
+        <Animated.View style={[styles.intro, { opacity: introOpacity }]} pointerEvents="none">
+          <Logo animated size={72} />
+        </Animated.View>
+      )}
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root:  { flex: 1 },
+  intro: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: Colors.bg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default function RootLayout() {
   return (

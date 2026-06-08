@@ -1,0 +1,24 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "> Global Solution 2026/1 · FIAP · Análise e Desenvolvimento de Sistemas",
+  "main": "deck-stage.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pulso-Urbano-Global-Solutions-2026/frontend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Pulso-Urbano-Global-Solutions-2026/frontend/issues"
+  },
+  "homepage": "https://github.com/Pulso-Urbano-Global-Solutions-2026/frontend#readme",
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
+}
