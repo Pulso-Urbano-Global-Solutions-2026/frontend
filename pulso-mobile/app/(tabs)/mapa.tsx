@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import WebView, { type WebViewMessageEvent } from 'react-native-webview';
+import { Logo } from '@/components/Logo/Logo';
 import ErrorState from '@/components/ErrorState/ErrorState';
 import { Colors } from '@/constants/colors';
 import { Typography } from '@/constants/typography';
@@ -167,6 +168,9 @@ export default function MapaScreen() {
               onPress={toggleCamada}
               disabled={loading}
             >
+              {camada === t && (
+                <Ionicons name="checkmark" size={14} color={Colors.cyan} style={{ marginRight: 4 }} />
+              )}
               <Text style={[styles.toggleText, camada === t && styles.toggleTextActive]}>
                 {t === 'no2' ? 'NO₂' : 'Temperatura'}
               </Text>
@@ -192,9 +196,13 @@ export default function MapaScreen() {
       {/* ── Banner: dados em processamento ──────────────── */}
       {allZero && !loading && (
         <View style={styles.zeroBanner}>
+          <Ionicons name="time-outline" size={14} color={Colors.moderado} style={{ marginRight: 6 }} />
           <Text style={styles.zeroBannerText}>
             Dados do satélite em processamento — próxima passagem orbital pendente
           </Text>
+          <TouchableOpacity onPress={() => router.push('/detalhes')} style={{ marginLeft: 8 }}>
+            <Text style={styles.zeroBannerLink}>Saber mais</Text>
+          </TouchableOpacity>
         </View>
       )}
 
@@ -215,7 +223,7 @@ export default function MapaScreen() {
           />
           {(loading || !leafletReady) && (
             <View style={styles.loadingOverlay}>
-              <ActivityIndicator size="large" color={Colors.bom} />
+              <Logo animated size={48} />
               <Text style={styles.loadingText}>
                 {!leafletReady ? 'Carregando mapa...' : 'Buscando dados...'}
               </Text>
@@ -268,19 +276,24 @@ const styles = StyleSheet.create({
     flex: 1, paddingVertical: 8, borderRadius: 8, alignItems: 'center',
     backgroundColor: Colors.surface,
   },
-  toggleActive:    { backgroundColor: Colors.surface2, borderWidth: 1, borderColor: Colors.border },
-  toggleText:      { color: Colors.textMuted, fontSize: Typography.size.sm },
-  toggleTextActive:{ color: Colors.text, fontWeight: '600' },
+  toggleActive:    { backgroundColor: Colors.cyanDim, borderWidth: 1, borderColor: Colors.cyan },
+  toggleText:      { fontFamily: Typography.font.body, color: Colors.textMuted, fontSize: Typography.size.sm },
+  toggleTextActive:{ fontFamily: Typography.font.subheading, color: Colors.cyan },
   fonte:           { color: Colors.textDim, fontSize: Typography.size.xs, textAlign: 'center' },
 
   zeroBanner: {
+    flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#1a1200',
     borderBottomWidth: 1, borderBottomColor: Colors.moderado,
-    paddingVertical: 7, paddingHorizontal: 16,
+    paddingVertical: 7, paddingHorizontal: 12,
   },
   zeroBannerText: {
-    color: Colors.moderado, fontSize: Typography.size.xs,
-    textAlign: 'center', lineHeight: 18,
+    fontFamily: Typography.font.body,
+    flex: 1, color: Colors.moderado, fontSize: Typography.size.xs, lineHeight: 18,
+  },
+  zeroBannerLink: {
+    fontFamily: Typography.font.subheading,
+    color: Colors.cyan, fontSize: Typography.size.xs,
   },
 
   loadingOverlay: {
@@ -289,7 +302,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(14,15,17,0.82)',
     gap: 12,
   },
-  loadingText: { color: Colors.textMuted, fontSize: Typography.size.sm },
+  loadingText: { fontFamily: Typography.font.mono, color: Colors.textMuted, fontSize: Typography.size.sm },
 
   legend: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
