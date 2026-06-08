@@ -1,6 +1,17 @@
 import { useEffect } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import {
+  SpaceGrotesk_400Regular,
+  SpaceGrotesk_600SemiBold,
+  SpaceGrotesk_700Bold,
+  useFonts as useSpaceFonts,
+} from '@expo-google-fonts/space-grotesk';
+import {
+  JetBrainsMono_400Regular,
+  JetBrainsMono_500Medium,
+  useFonts as useMonoFonts,
+} from '@expo-google-fonts/jetbrains-mono';
 import { AuthProvider, useAuthContext } from '@/contexts/AuthContext';
 import { authEvents } from '@/services/authEvents';
 import { Colors } from '@/constants/colors';
@@ -13,17 +24,27 @@ function RootLayoutInner() {
   const router = useRouter();
   const segments = useSegments();
 
-  // Esconde o splash apenas depois que o SecureStore resolver (evita flash de login).
-  useEffect(() => {
-    if (isLoaded) SplashScreen.hideAsync();
-  }, [isLoaded]);
+  const [spaceLoaded] = useSpaceFonts({
+    SpaceGrotesk_400Regular,
+    SpaceGrotesk_600SemiBold,
+    SpaceGrotesk_700Bold,
+  });
+  const [monoLoaded] = useMonoFonts({
+    JetBrainsMono_400Regular,
+    JetBrainsMono_500Medium,
+  });
 
-  // Listener do event bus: interceptor 401 em rota autenticada → login.
+  const fontsReady = spaceLoaded && monoLoaded;
+
+  // Splash fica até auth E fontes estarem prontos.
+  useEffect(() => {
+    if (isLoaded && fontsReady) void SplashScreen.hideAsync();
+  }, [isLoaded, fontsReady]);
+
   useEffect(() => {
     return authEvents.on('unauthorized', () => router.replace('/(auth)/login'));
   }, [router]);
 
-  // Auth guard bidirecional: aguarda isLoaded para não redirecionar antes da restauração do token.
   useEffect(() => {
     if (!isLoaded) return;
     const inAuth = segments[0] === '(auth)';
