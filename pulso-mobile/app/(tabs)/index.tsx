@@ -1,4 +1,3 @@
-// app/(tabs)/index.tsx — adiciona alerta de pet quando temp > 35°C
 import { useEffect, useState } from 'react';
 import { RefreshControl, SafeAreaView, ScrollView, StyleSheet,
          Text, TouchableOpacity, View } from 'react-native';
@@ -6,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 import { agendarNotificacaoDiaria } from '@/services/notificationService';
+import { LogoWordmark } from '@/components/Logo/Logo';
 import ScoreGauge from '@/components/ScoreGauge/ScoreGauge';
 import ClassificacaoBadge from '@/components/ClassificacaoBadge/ClassificacaoBadge';
 import RecomendacaoCard from '@/components/RecomendacaoCard/RecomendacaoCard';
@@ -64,7 +64,10 @@ export default function HomeScreen() {
           <RefreshControl refreshing={loading} onRefresh={refetch} tintColor={Colors.bom} />
         }
       >
-        <Text style={styles.header}>Pulso Urbano · São Paulo</Text>
+        <View style={styles.headerRow}>
+          <LogoWordmark size={32} />
+          <Text style={styles.headerCity}>São Paulo</Text>
+        </View>
 
         {loading && !data && <LoadingSkeleton rows={5} />}
         {!loading && error && <ErrorState message={error} onRetry={refetch} />}
@@ -128,7 +131,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe:        { flex: 1, backgroundColor: Colors.bg },
   content:     { flexGrow: 1, padding: 20, gap: 16, alignItems: 'center' },
-  header:      { color: Colors.textMuted, fontSize: Typography.size.sm, alignSelf: 'flex-start' },
+  headerRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' },
+  headerCity:  { fontFamily: Typography.font.mono, fontSize: Typography.size.xs, color: Colors.textDim, letterSpacing: 2 },
   metrics:     {
     flexDirection: 'row', width: '100%',
     backgroundColor: Colors.surface, borderRadius: 12,
