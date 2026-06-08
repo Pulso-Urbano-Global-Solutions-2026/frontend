@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StyleSheet,
          Switch, Text, TextInput, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { Button } from '@/components/Button/Button';
@@ -115,8 +116,23 @@ export default function PerfilScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>{usuario?.nome ?? 'Perfil'}</Text>
-        <Text style={styles.email}>{usuario?.email}</Text>
+        {/* Avatar: gradiente cyan→green com inicial do nome */}
+        <View style={styles.avatarRow}>
+          <LinearGradient
+            colors={[Colors.cyan, Colors.bom]}
+            style={styles.avatar}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <Text style={styles.avatarInitial}>
+              {(usuario?.nome ?? 'U').charAt(0).toUpperCase()}
+            </Text>
+          </LinearGradient>
+          <View>
+            <Text style={styles.title}>{usuario?.nome ?? 'Perfil'}</Text>
+            <Text style={styles.email}>{usuario?.email}</Text>
+          </View>
+        </View>
 
         <TextInput
           style={styles.input} value={nome} onChangeText={setNome}
@@ -156,8 +172,11 @@ const styles = StyleSheet.create({
   safe:        { flex: 1, backgroundColor: Colors.bg },
   skeleton:    { padding: 20 },
   content:     { flexGrow: 1, padding: 20, gap: 12 },
+  avatarRow:   { flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 4 },
+  avatar:      { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
+  avatarInitial: { fontFamily: Typography.font.heading, fontSize: Typography.size.xl, color: '#fff' },
   title:       { fontFamily: Typography.font.heading,  fontSize: Typography.size.xl, color: Colors.text },
-  email:       { fontFamily: Typography.font.body, fontSize: Typography.size.sm, color: Colors.textMuted, marginBottom: 8 },
+  email:       { fontFamily: Typography.font.body, fontSize: Typography.size.sm, color: Colors.textMuted },
   input:       {
     fontFamily: Typography.font.body,
     backgroundColor: Colors.surface, borderColor: Colors.border, borderWidth: 1,
